@@ -4,8 +4,8 @@
 BlynkTimer timer;
 
 char auth[] = "IPE5pn7ACBwKsKeYK1Aos41RZhqEOMs3"
-char ssid[] = ""
-char pass[] = ""
+char ssid[] = "Extinguisher"
+char pass[] = "123456"
  
 const int Flame_Sensor = 11;        //установка устройств на свой пин
 int Buzzer = 9; 
