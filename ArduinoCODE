@@ -1,27 +1,27 @@
-#include <ESP8266wifi.h>
-#define BLYNK_PRINT Serial 
+#include <ESP8266wifi.h>          // Подключение библиотеки модуля ESP8266 для отправки сообщений пользователю
+#define BLYNK_PRINT Serial        // Библиотека для печати сообщений в приложении blynk
+#include <BlynkSimpleEsp8266.h>   // Библиотека blynk для встроенного оборудования, работающего с модулем arduino, ESP8266
 BlynkTimer timer;
 
-char auth[] = ""
+char auth[] = "IPE5pn7ACBwKsKeYK1Aos41RZhqEOMs3"
 char ssid[] = ""
 char pass[] = ""
  
-const int Flame_Sensor =
-int Buzzer
+const int Flame_Sensor = 11;        //установка устройств на свой пин
+int Buzzer = 9; 
 int flame = HIGH;
-int green_light = 
-int blue_light = 
-const int motor = 
-
+int green_light = 5; 
+int blue_light = 6;
+const int motor = 8;
 
 int Y = 0;
 bool x; 
-void Activate_on_fire()
-{
-  int sensor = digitalRead(D0);
+void Activate_on_fire()                        // Функция void, активирующаяся,при начале пожара
+{                                           
+  int sensor = digitalRead(D0);                // Датчик считывает значение с пина D0
   if(sensor == 1 && Y== 0)
   {
-    Serial.println("ALARM!!! FIRE!!! ALARM!!! FIRE!!!");
+    Serial.println("ALARM!!! FIRE!!! ALARM!!! FIRE!!!");    // Сообщение о начале пожара, отправляемое на почту
     Blynk.notify("Fire in premises");
     Y=1;
   }
@@ -31,25 +31,25 @@ void Activate_on_fire()
   }
 }
 
-void setup() {
-  Blynk.begin(auth, ssid, pass);
-  pinMode(D0, INPUT_PULLUP);
-  timer.setInterval(1000L,Activate_on_fire);
-  pinMode(Buzzer, OUTPUT);
+void setup() {                          
+  Blynk.begin(auth, ssid, pass);                //blynk пытается взаимодействовать с Wi-Fi модулем
+  pinMode(D0, INPUT_PULLUP);                    
+  timer.setInterval(1000L,Activate_on_fire);    //вызываем функцию void, чтобы активировирповалась при пожаре
+  pinMode(Buzzer, OUTPUT);                      // вывод устройств установлен в качестве сигнала пина
   pinMode(green_light, OUTPUT);
   pinMode(blue_light, OUTPUT);
   pinMode(motor, OUTPUT);
   pinMode(Flame_Sensor, INPUT);
 }
-void loop() {
-  flame = digitalRead(Flame_Sensor);
+void loop() {                                   //функция пустого цикла
+  flame = digitalRead(Flame_Sensor);            //переменная пламени считывает с 11 пина, что для датчика пламени  значение установлено
   if (flame == LOW)
   {
-    digitalWrite(green_led, LOW);
-    digitalWrite(blue_led, HIGH);
-    delay(100);
-    digitalWrite(blue_led, LOW);
-    delay(100);
+    digitalWrite(green_led, LOW);                 //зеленый светодиод гаснет
+    digitalWrite(blue_led, HIGH);                 //загорается синий светодиод
+    delay(100);                                   //задержка 100 миллисекунд
+    digitalWrite(blue_led, LOW);                  //снова синий светодиод низкий
+    delay(100);                                   //задержка 100 миллисекунд
     digitalWrite(blue_led,HIGH);
     digitalWrite(motor, HIGH);
     tone(Buzzer, 4000);
@@ -63,6 +63,6 @@ void loop() {
     digitalWrite(motor, LOW);
     digitalWrite(red_led, LOW);
   }
-  Blynk.run();
-  timer.run();
+  Blynk.run();                                    //обработка библиотекой blynk
+  timer.run();                                    //выполнение timer, который мы определяли в начале
 }
